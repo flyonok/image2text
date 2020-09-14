@@ -145,6 +145,5 @@ which is 1 followed by one googol of zeroes.
 
 ```
 
-## Stargazers over time
-
-[![Stargazers over time](https://starcharts.herokuapp.com/prabhakar267/image2text.svg)](https://starcharts.herokuapp.com/prabhakar267/image2text)
+## mine
+增加了对汉字的处理
