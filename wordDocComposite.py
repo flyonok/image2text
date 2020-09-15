@@ -18,42 +18,44 @@ def CompositeTwoDocs(srcDocFullName, dstDocFullName, compositeName):
         currentLabelStyleContent = None  # 当前标签样式对应的内容
         # 查找源文档的相关内容
         for srcPara in srcDoc.paragraphs:
-            if (srcPara.style.name.find('Heading 2') >= 0 and srcPara.text.find(compositeName) > 0):
+            if (srcPara.style.name.find('Heading 2') >= 0 and srcPara.text.find(compositeName) >= 0):
                 print('find {0}'.format(srcPara))
                 firstPage = True
             elif (srcPara.style.name.find('Heading 2') >= 0 and firstPage):
                 secondPage = True
+                break
             else:
                 if (firstPage and not secondPage):
-                    if (srcPara.style.name.find('Heading 3')):
+                    if (srcPara.style.name.find('Heading 3') >= 0):
                         srcParasMap[srcPara.text] = []
                         currentLabelStyleContent = srcPara.text
                     else:
                         if currentLabelStyleContent is None:
                             raise ValueError('不合格的word模板文档！')
-                        srcParasMap[currentLabelStyleContent].Append(srcPara)
+                        srcParasMap[currentLabelStyleContent].append(srcPara)
         firstPage = False
         secondPage = False
         currentLabelStyleContent = None  # 当前标签样式对应的内容
         # 查找目标文档的相关内容
         for dstPara in dstDoc.paragraphs:
-            if (dstPara.style.name.find('Heading 2') >= 0 and dstPara.text.find(compositeName) > 0):
+            if (dstPara.style.name.find('Heading 2') >= 0 and dstPara.text.find(compositeName) >= 0):
                 print('find {0}'.format(dstPara))
                 firstPage = True
             elif (dstPara.style.name.find('Heading 2') >= 0 and firstPage):
                 secondPage = True
+                break
             else:
                 if (firstPage and not secondPage):
-                    if (dstPara.style.name.find('Heading 3')):
+                    if (dstPara.style.name.find('Heading 3') >= 0):
                         dstParasMap[dstPara.text] = []
                         currentLabelStyleContent = dstPara.text
                     else:
                         if currentLabelStyleContent is None:
                             raise ValueError('不合格的word模板文档！')
-                        dstParasMap[currentLabelStyleContent].Append(dstPara)
+                        dstParasMap[currentLabelStyleContent].append(dstPara)
         
         # 开始组合
-        for key, dstParas in dstParasMap.items:
+        for key, dstParas in dstParasMap.items():
             srcParas = srcParasMap[key]
             if len(srcParas) <= 0:
                 print('源文档中没有该项--{0}--内容'.format(key))
@@ -61,12 +63,13 @@ def CompositeTwoDocs(srcDocFullName, dstDocFullName, compositeName):
             else:
                 for index, item in enumerate(dstParas):
                     if (index <= len(srcParas)):
-                        dstPara[index].text = srcParas[index].text
+                        dstParas[index].text = srcParas[index].text
                     else:
                         print('{0}中的长度--{1}--已经大于源文档的总长度--{2}'.format(key, index, len(srcParas)))
-        dstDoc.Save(dstDocFullName)
+        dstDoc.save(dstDocFullName)
 
     except Exception as e:
+        print('出现错误...')
         print(e)
         return False
     return True
